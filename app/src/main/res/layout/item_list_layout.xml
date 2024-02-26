@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mainLinearLayout"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            >
+
+        <LinearLayout
+            android:id="@+id/ll_item_image"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="@dimen/item_image_padding">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_item_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_image_height"
+                android:contentDescription="@string/content_description"
+                app:civ_border_color="@color/black"
+                app:civ_border_width="1dp"
+                android:src="@color/colorLightGrey"
+               />
+        </LinearLayout>
+
+    <!--TODO Step 2: Update the item list design.-->
+    <!--START-->
+        <LinearLayout
+            android:id="@+id/ll_product_details"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/item_image_title_price_marginStart"
+            android:layout_marginEnd="@dimen/item_image_title_price_marginStart"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/item_value_text_color"
+                android:textSize="@dimen/rv_item_name_textSize"
+                tools:text="Name" />
+
+            <TextView
+                android:id="@+id/tv_item_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/rv_item_price_marginTop"
+                android:textColor="@color/item_value_text_color"
+                android:textSize="@dimen/rv_item_price_textSize"
+                android:textStyle="bold"
+                tools:text="Rs. 100.00" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="right"
+            android:layout_margin="10dp">
+        <ImageButton
+            android:id="@+id/ib_delete_product"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/content_description"
+            android:padding="@dimen/delete_icon_padding"
+            android:src="@drawable/ic_vector_delete" />
+        <!--END-->
+        </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

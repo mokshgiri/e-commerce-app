@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO Step 1: Design the item layout for the Address-->
+<!--START-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardMaxElevation="12dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/parentLinearLayout"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/item_address_paddingStartEnd"
+            android:paddingTop="@dimen/item_address_paddingTopBottom"
+            android:paddingEnd="@dimen/item_address_paddingStartEnd"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?selectableItemBackground"
+            android:paddingBottom="@dimen/item_address_paddingTopBottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_address_full_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/sf_pro_text_bold"
+            android:textColor="@color/item_value_text_color"
+            android:textSize="@dimen/item_address_name_textSize"
+            tools:text="Moksh Giri" />
+
+        <TextView
+            android:id="@+id/tv_address_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/app_gradient_color_background"
+            android:paddingStart="@dimen/item_address_type_paddingStartEnd"
+            android:paddingTop="@dimen/item_address_type_paddingTopBottom"
+            android:paddingEnd="@dimen/item_address_type_paddingStartEnd"
+            android:paddingBottom="@dimen/item_address_type_paddingTopBottom"
+            android:textColor="@color/white"
+            android:textSize="@dimen/address_details_textSize"
+            android:textStyle="bold"
+            tools:text="Home" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_address_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/address_details_marginTop"
+        android:textColor="@color/item_value_text_color"
+        android:fontFamily="@font/sf_pro_text_medium"
+        android:textSize="@dimen/address_details_textSize"
+        tools:text="XYZ" />
+
+    <TextView
+        android:id="@+id/tv_address_mobile_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/address_details_marginTop"
+        android:textColor="@color/item_value_text_color"
+        android:fontFamily="@font/sf_pro_text_medium"
+        android:textSize="@dimen/address_details_textSize"
+        tools:text="+91 123456789" />
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+    <!--END-->

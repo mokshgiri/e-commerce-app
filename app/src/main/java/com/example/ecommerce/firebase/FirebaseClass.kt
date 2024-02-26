@@ -200,7 +200,40 @@ class FirebaseClass {
 
     fun deleteProductFromFirebase(fragment: Fragment, productId: String?) {
         databaseProduct.child(productId!!).removeValue().addOnSuccessListener {
-            when(fragment){
+
+
+            // Reference to the node where cart items are stored for all users
+            val dbAllUsersCarts = databaseUser.parent!!.child(Constants.USERS)
+
+            // Iterate over all users' carts
+            dbAllUsersCarts.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (userSnapshot in snapshot.children) {
+                        // Reference to the cart node of each user
+                        val userCartRef = userSnapshot.child(Constants.CART_ITEMS)
+
+                        // Check if the user has any cart items
+                        if (userCartRef.exists()) {
+                            // Iterate over the cart items of the user
+                            userCartRef.children.forEach { cartItemSnapshot ->
+                                val cartItem = cartItemSnapshot.getValue(CartItem::class.java)
+
+                                // Check if the cart item corresponds to the deleted product
+                                if (cartItem != null && cartItem.productId == productId) {
+                                    // Remove the cart item
+                                    cartItemSnapshot.ref.removeValue()
+                                }
+                            }
+                        }
+                    }
+                }
+                override fun onCancelled(error: DatabaseError) {
+//                    activity.errorGettingAllCartListItems()
+                }
+            })
+
+
+                when(fragment){
                 is ProductsFragment ->{
                     fragment.productDeletedSuccess()
                 }

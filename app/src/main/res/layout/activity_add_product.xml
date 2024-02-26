@@ -43,18 +43,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <FrameLayout
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/fl_product_image"
+                app:cardElevation="10dp"
+                app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardMaxElevation="12dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/add_product_header_image_height"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+             >
 
                 <ImageView
                     android:id="@+id/iv_product_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_margin="10dp"
                     android:background="@color/colorImageViewBackground"
                     android:contentDescription="@string/content_description"
                     android:scaleType="fitXY" />
@@ -64,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|bottom"
                     android:background="@drawable/circular_background_white"
-                    android:layout_margin="10dp">
+                    android:layout_margin="20dp">
 
                     <ImageView
                         android:id="@+id/iv_add_update_product"
@@ -79,6 +91,9 @@
 
             </FrameLayout>
             </FrameLayout>
+
+            </androidx.cardview.widget.CardView>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_product_title"

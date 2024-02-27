@@ -58,6 +58,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation ("com.google.firebase:firebase-messaging-ktx:23.4.1")
 
     //    for glide library
     implementation ("com.github.bumptech.glide:glide:4.15.1")
@@ -76,6 +77,10 @@ dependencies {
 
     // for circular image view
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    // okhttp library
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 
 
 }

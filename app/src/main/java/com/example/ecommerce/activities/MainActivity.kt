@@ -2,16 +2,21 @@ package com.example.ecommerce.activities
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.ecommerce.R
+import com.example.ecommerce.firebase.FirebaseClass
 import com.example.ecommerce.fragments.OrdersFragment
 import com.example.ecommerce.fragments.DashboardFragment
-import com.example.ecommerce.fragments.HomeFragment
 import com.example.ecommerce.fragments.ProductsFragment
+import com.example.ecommerce.utils.Constants
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.messaging.FirebaseMessaging
 import np.com.susanthapa.curved_bottom_navigation.CbnMenuItem
 import np.com.susanthapa.curved_bottom_navigation.CurvedBottomNavigationView
 
@@ -23,6 +28,9 @@ class MainActivity : BaseActivity() {
     private lateinit var customFont: Typeface
     private lateinit var toolbar: Toolbar
     private lateinit var toolbarTitle: TextView
+    private lateinit var dbRef: DatabaseReference
+    private lateinit var tokenId: String
+    private lateinit var token: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +40,8 @@ class MainActivity : BaseActivity() {
 
         initializeViews()
         setUpActionbar()
+
+        getFcmToken()
 
 //        // Initialize the custom font
 //        customFont = Typeface.createFromAsset(assets, "font/custom_font.ttf")
@@ -80,6 +90,23 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    private fun getFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful){
+                token = it.result
+
+                val userHashMap = HashMap<String, Any>()
+                userHashMap[Constants.FCM_TOKEN] = token
+
+                FirebaseClass().updateUserDetails(this@MainActivity, userHashMap, 1)
+                FirebaseClass().getAllTokens(this@MainActivity, token)
+
+
+                Log.d("fcmToken", token.toString())
+            }
+        }
+    }
+
     private fun loadFragment(fragment: Fragment, name: String) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.frameLayout, fragment)
@@ -115,6 +142,34 @@ class MainActivity : BaseActivity() {
 
     override fun onBackPressed() {
         doubleBackToExit()
+    }
+
+    fun tokenAddedSuccess() {
+        Toast.makeText(this@MainActivity, "Token Added Successfully", Toast.LENGTH_SHORT).show()
+
+    }
+
+    fun getTokenList(tokenList: ArrayList<String>, token: String) {
+
+        Log.d("tokenList1", tokenList.toString())
+        Log.d("countListiTems", tokenList.count().toString())
+
+
+        dbRef = FirebaseClass().databaseFcmToken.push()
+        tokenId = dbRef.key!!
+
+        if (tokenList.isEmpty() || !tokenList.contains(token)){
+            FirebaseClass().storeFcmTokensToFirebase(this@MainActivity, dbRef,tokenId, token)
+        }
+
+
+        for (tokenItem in tokenList){
+            Log.d("tokenItems", tokenItem)
+
+
+        }
+
+
     }
 
 }

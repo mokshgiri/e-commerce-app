@@ -216,11 +216,9 @@
                 android:id="@+id/btn_submit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:background="@drawable/button_background"
                 android:foreground="?selectableItemBackgroundBorderless"
                 android:fontFamily="@font/sf_pro_text_bold"
-
                 android:text="@string/btn_submit"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/btn_textSize"

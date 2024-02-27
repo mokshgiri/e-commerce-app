@@ -14,5 +14,6 @@ data class User(
     val gender : String ?= null,
     val profileCompleted : Int = 0,
     val cartItems : HashMap<String, CartItem> ?= null,
-    val addresses : HashMap<String, Address> ?= null
+    val addresses : HashMap<String, Address> ?= null,
+    val fcmToken : String ?= null
 ) : Parcelable

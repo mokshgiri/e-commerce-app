@@ -3,16 +3,19 @@ package com.example.ecommerce.activities
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.InputType
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import com.example.ecommerce.utils.Constants
 import com.example.ecommerce.firebase.FirebaseClass
 import com.example.ecommerce.R
 import com.example.ecommerce.model.User
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : BaseActivity() {
@@ -22,8 +25,12 @@ class LoginActivity : BaseActivity() {
     private lateinit var tvForgotPass : TextView
     private lateinit var etEmail : EditText
     private lateinit var etPassword : EditText
+    private lateinit var passwordLayout : TextInputLayout
     private lateinit var firebaseAuth : FirebaseAuth
+    private lateinit var userDetails : User
     private lateinit var sharedPreferences : SharedPreferences
+    private var isLoggedIn : Boolean = false
+    private var passwordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +40,14 @@ class LoginActivity : BaseActivity() {
         initializeViews()
         initializeFirebase()
 
-        sharedPreferences = getSharedPreferences(Constants.LOGIN_PREFERENCES, MODE_PRIVATE)
+        passwordToggleSetup()
 
+        sharedPreferences = getSharedPreferences(Constants.LOGIN_PREFERENCES, MODE_PRIVATE)
+        isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+
+        if (isLoggedIn){
+            navigateToAnotherActivity()
+        }
 
         registerTextView.setOnClickListener {
             val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
@@ -49,6 +62,36 @@ class LoginActivity : BaseActivity() {
             val intent = Intent(this@LoginActivity, ForgotPasswordActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun passwordToggleSetup() {
+        passwordLayout.setEndIconOnClickListener {
+            if (passwordVisible) {
+                // Hide the password
+                etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+                // Reset the font to apply custom font
+                etPassword.typeface = ResourcesCompat.getFont(this,R.font.sf_pro_text_medium)
+
+                passwordLayout.setEndIconDrawable(R.drawable.password_visibilty_on)
+            } else {
+                // Show the password
+                etPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+
+                // Reset the font to apply custom font
+                etPassword.typeface = ResourcesCompat.getFont(this,R.font.sf_pro_text_medium)
+
+                passwordLayout.setEndIconDrawable(R.drawable.password_visibilty_off)
+            }
+//            // Move the cursor to the end of the text
+            etPassword.setSelection(etPassword.getText()?.length?:0)
+
+            // Toggle the password visibility flag
+            passwordVisible = !passwordVisible
+        }
+
     }
 
     private fun logInRegisteredUser() {
@@ -69,7 +112,7 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun savePreferences() {
-//        sharedPreferences.edit().putBoolean("isLoggedIn", true).apply()
+        sharedPreferences.edit().putBoolean("isLoggedIn", true).apply()
         FirebaseClass().getUserDetails(this@LoginActivity)
     }
 
@@ -102,10 +145,14 @@ class LoginActivity : BaseActivity() {
         etEmail = findViewById(R.id.et_email)
         etPassword = findViewById(R.id.et_password)
         tvForgotPass = findViewById(R.id.tv_forgot_password)
+
+        passwordLayout = findViewById(R.id.til_password)
     }
 
     fun userLoggedInSuccess(user : User) {
         hideProgressDialog()
+
+        userDetails = user
 //
         Toast.makeText(this, R.string.login_successful, Toast.LENGTH_SHORT).show()
 //        showSnackBar(resources.getString(R.string.login_successful), false)
@@ -115,18 +162,21 @@ class LoginActivity : BaseActivity() {
 //        Log.d("email", user.email.toString())
 //        Log.d("uid", user.uid.toString())
 
-        if (user.profileCompleted == 0) {
+        navigateToAnotherActivity()
+    }
+
+    private fun navigateToAnotherActivity() {
+        if (userDetails.profileCompleted == 0) {
             val intent = Intent(this@LoginActivity, UserProfileActivity::class.java)
-            intent.putExtra(Constants.EXTRA_USER_DETAILS, user)
+            intent.putExtra(Constants.EXTRA_USER_DETAILS, userDetails)
             startActivity(intent)
             finish()
-        }else{
+        } else {
             val intent = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
 
             Log.d("triggered", "triggered")
         }
-
     }
 }

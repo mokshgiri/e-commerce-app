@@ -45,6 +45,8 @@ object Constants {
     const val EXTRA_CART_ACTIVITY = "extra_cart_activity"
     const val EXTRA_SELECTED_ADDRESS = "extra_selected_address"
     const val ALL_CART_LIST = "all_products_list"
+    const val FCM_TOKEN = "fcm_token"
+    const val FCM_SERVER_KEY = "AAAAgsOGu1s:APA91bGY2W0J3JHp9q5Rjxqz0XRuvk_JfG-KZSOoihAFcuARtOZ28jWcpCI1GEyuLDp1feUWQNHKhEgcGnNEhmklKkMnCYKU1kyivOmlkyrV1fBtn63A51hf1MowrimlFgx3yvd4ccvt"
 
     fun showImageChooser(activity: Activity){
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)

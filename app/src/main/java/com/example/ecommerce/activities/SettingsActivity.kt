@@ -32,6 +32,7 @@ class SettingsActivity : BaseActivity() {
     private lateinit var addressBtn : CircleImageView
     private lateinit var ivUserPhoto : ImageView
     private lateinit var sharedPreferences: SharedPreferences
+    private var isLoggedIn: Boolean = false
     private var userDetails : User ?= null
 //    private lateinit var firebase
 
@@ -46,6 +47,7 @@ class SettingsActivity : BaseActivity() {
 //        loadUserData()
 
         sharedPreferences = getSharedPreferences(Constants.LOGIN_PREFERENCES, MODE_PRIVATE)
+
 
         btnEdit.setOnClickListener {
             val intent = Intent(this@SettingsActivity, UserProfileActivity::class.java)

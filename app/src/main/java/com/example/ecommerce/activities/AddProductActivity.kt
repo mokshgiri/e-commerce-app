@@ -16,6 +16,15 @@ import com.example.ecommerce.firebase.FirebaseClass
 import com.example.ecommerce.model.Product
 import com.example.ecommerce.utils.Constants
 import com.example.ecommerce.utils.GlideLoader
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.Response
+import org.json.JSONObject
+import java.io.IOException
 
 class AddProductActivity : BaseActivity() {
     private lateinit var toolbar : androidx.appcompat.widget.Toolbar
@@ -26,6 +35,9 @@ class AddProductActivity : BaseActivity() {
     private lateinit var etProductDescription : EditText
     private lateinit var etProductQuantity : EditText
     private lateinit var btnSubmit : Button
+    private lateinit var jsonObject: JSONObject
+    private lateinit var notificationObj: JSONObject
+    private lateinit var dataObj: JSONObject
     private lateinit var pickMedia : ActivityResultLauncher<PickVisualMediaRequest>
     private var productImageUri : Uri ?= null
 
@@ -152,12 +164,82 @@ class AddProductActivity : BaseActivity() {
         uploadProductDetails(imageURL)
   }
 
-    fun productDetailsUploadedSuccessfully() {
+    fun productDetailsUploadedSuccessfully(product: Product) {
         hideProgressDialog()
 
         Toast.makeText(this@AddProductActivity, resources.getString(R.string.product_uploaded_success_message), Toast.LENGTH_SHORT)
             .show()
 
+        sendNotification(product)
+//        FirebaseClass().getAllTokens()
         finish()
+    }
+
+    private fun sendNotification(product: Product) {
+        val productTitle = product.productTitle
+        val userName = product.userName
+        val userId = product.uid
+
+        val body = resources.getString(R.string.checkout_this_new_project)
+
+        try{
+            notificationObj = JSONObject()
+
+            notificationObj.put("title", productTitle)
+            notificationObj.put("body", body)
+
+            dataObj = JSONObject()
+            dataObj.put("userId", userId)
+
+            FirebaseClass().getAllTokens(this@AddProductActivity, null)
+
+        }
+        catch (exception : Exception){
+
+        }
+    }
+
+
+    fun getTokenList(tokenList: ArrayList<String>) {
+        for (token in tokenList){
+            Log.d("tokenForProduct", token)
+
+            jsonObject = JSONObject()
+
+            jsonObject.put("notification",notificationObj)
+            jsonObject.put("data",dataObj)
+            jsonObject.put("to",token)
+            jsonObject.put("priority", "high")
+
+            callApi(jsonObject)
+        }
+    }
+
+
+    private fun callApi(jsonObject : JSONObject){
+        val JSON = "application/json; charset=utf-8".toMediaType()
+
+//        val JSON = MediaType.get("application/json; charset=utf-8")
+        val client = OkHttpClient()
+
+        val url = "https://fcm.googleapis.com/fcm/send"
+
+        val body = RequestBody.create(JSON, jsonObject.toString())
+
+        val request = Request.Builder().url(url).post(body).header("Authorization", "Bearer ${Constants.FCM_SERVER_KEY}")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback{
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("error", e.message.toString())
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                Log.d("Respond", "Success")
+
+                Log.d("reeponseText", response.message.toString())
+            }
+
+        })
     }
 }

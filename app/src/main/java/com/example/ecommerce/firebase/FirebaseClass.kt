@@ -11,6 +11,7 @@ import com.example.ecommerce.activities.AddressListActivity
 import com.example.ecommerce.activities.CartListActivity
 import com.example.ecommerce.model.User
 import com.example.ecommerce.activities.LoginActivity
+import com.example.ecommerce.activities.MainActivity
 import com.example.ecommerce.activities.ProductsDetailsActivity
 import com.example.ecommerce.activities.RegisterActivity
 import com.example.ecommerce.activities.SettingsActivity
@@ -32,6 +33,7 @@ import com.google.firebase.storage.FirebaseStorage
 class FirebaseClass {
     val databaseUser = FirebaseDatabase.getInstance().getReference(Constants.USERS)
     val databaseProduct = FirebaseDatabase.getInstance().getReference(Constants.PRODUCTS)
+    val databaseFcmToken = FirebaseDatabase.getInstance().getReference(Constants.FCM_TOKEN)
     val databaseCartItems = FirebaseDatabase.getInstance().getReference(Constants.CART_ITEMS)
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -101,6 +103,7 @@ class FirebaseClass {
                 is UserProfileActivity -> {
                     activity.userProfileUpdateSuccess(profileCompleted)
                 }
+
             }
         }.addOnFailureListener {
             when (activity) {
@@ -157,7 +160,7 @@ class FirebaseClass {
         dbRef: DatabaseReference
     ) {
         dbRef.setValue(product).addOnSuccessListener {
-            activity.productDetailsUploadedSuccessfully()
+            activity.productDetailsUploadedSuccessfully(product)
         }.addOnFailureListener {
             activity.hideProgressDialog()
         }
@@ -473,5 +476,66 @@ class FirebaseClass {
         }.addOnFailureListener {
             activity.deleteAddressFailed()
         }
+    }
+
+    fun storeFcmTokensToFirebase(activity: MainActivity, dbRef : DatabaseReference, tokenId: String?, token: String) {
+
+        dbRef.setValue(token).addOnSuccessListener {
+            activity.tokenAddedSuccess()
+        }
+    }
+
+    fun getAllTokens(activity: Activity, token: String?): ArrayList<String> {
+
+        val tokenList = ArrayList<String>()
+
+        databaseFcmToken.addValueEventListener(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+//                allAddressListItems.clear()
+
+                if (snapshot.exists()){
+                    for (tokenSnapshot in snapshot.children) {
+                        val tokenValue = tokenSnapshot.value
+
+                        if (tokenValue != null) {
+                            Log.d("tokenSnapshotValue", tokenValue.toString())
+
+                            tokenList.add(tokenValue.toString())
+
+
+
+                        }
+//                        if (address != null) {
+//                            allAddressListItems.add(address)
+//                        }
+                    }
+
+                    when(activity){
+                        is MainActivity ->{
+                            activity.getTokenList(tokenList, token!!)
+                        }
+                        is AddProductActivity ->{
+                            activity.getTokenList(tokenList)
+                        }
+                    }
+//                    activity.addressListDataFetchSuccess(allAddressListItems)
+                }
+                else{
+                    when(activity){
+                        is MainActivity ->{
+                            activity.getTokenList(tokenList, token!!)
+                        }
+                    }
+//                    activity.noDataExistsInDatabase()
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        return tokenList
     }
 }

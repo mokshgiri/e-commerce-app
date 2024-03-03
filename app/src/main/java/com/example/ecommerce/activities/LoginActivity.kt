@@ -15,8 +15,17 @@ import com.example.ecommerce.utils.Constants
 import com.example.ecommerce.firebase.FirebaseClass
 import com.example.ecommerce.R
 import com.example.ecommerce.model.User
+import com.example.ecommerce.retrofit.ApiService.ApiService
+import com.example.ecommerce.retrofit.MyData
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class LoginActivity : BaseActivity() {
 
@@ -42,6 +51,8 @@ class LoginActivity : BaseActivity() {
 
         passwordToggleSetup()
 
+        getDataFromApi()
+
         sharedPreferences = getSharedPreferences(Constants.LOGIN_PREFERENCES, MODE_PRIVATE)
         isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
@@ -63,7 +74,7 @@ class LoginActivity : BaseActivity() {
             startActivity(intent)
         }
     }
-
+    
     private fun passwordToggleSetup() {
         passwordLayout.setEndIconOnClickListener {
             if (passwordVisible) {
@@ -178,5 +189,35 @@ class LoginActivity : BaseActivity() {
 
             Log.d("triggered", "triggered")
         }
+    }
+
+    fun getDataFromApi(){
+
+        val retrofitBuilder = Retrofit.Builder().baseUrl("https://dummyjson.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+
+        val apiData = retrofitBuilder.getAllData()
+
+        apiData.enqueue(object  : Callback<MyData>{
+            override fun onResponse(call: Call<MyData>, response: Response<MyData>) {
+                val data = response.body()
+
+                Log.d("dataLog", data?.users.toString())
+
+                val userList = data?.users
+
+                val dataLogAt2 = userList!![1]
+                val address = dataLogAt2.address
+
+                Log.d("dataLogAddressAt2", address.city)
+            }
+
+            override fun onFailure(call: Call<MyData>, t: Throwable) {
+                Log.d("failedMsg", t.message.toString())
+            }
+
+        })
     }
 }
